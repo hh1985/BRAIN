@@ -1,0 +1,351 @@
+%\VignetteIndexEntry{BRAIN Usage}
+\documentclass[a4paper]{article}
+\usepackage{url}
+\title{Bioconductor BRAIN Package Vignette}
+
+\author{Piotr Dittwald, J\"{u}rgen Claesen, Dirk Valkenborg}
+
+\SweaveOpts{echo=true}
+
+\begin{document}
+
+\maketitle
+
+<<echo=false, eval=true>>=
+library(BRAIN)
+@
+
+% useful resources for Sweave: http://www.statistik.lmu.de/~leisch/Sweave
+
+The R package BRAIN ({\bf B}affling {\bf R}ecursive {\bf A}lgorithm for {\bf I}sotopic distributio{\bf N} calculations) provides a computation- and memory-efficient method
+to calculate the{\it{ aggregated isotopic distribution}} of peptides and proteins.
+
+
+\section{Introduction}
+
+The {\it{isotopic distribution}} is an important, but often forgotten, concept in the field of biomolecular mass spectrometry. 
+Yet, it is particularly useful for the interpretation of the complex patterns observed in mass spectral data. 
+The isotopic distribution reflects the probabilities of occurrence of different isotopic variants of a molecule and is visualized in the mass spectrum 
+by the relative heights of the series of peaks related to the molecule. Ignoring the small deviations of the masses from integer values, 
+{\it{aggregated isotopic variants}} of a molecule, with masses differing approximately by 1Da, can be used to calculate the{\it{ aggregated isotopic distribution}}.
+Prior knowledge about this distribution can be used to develop strategies for searching particular profiles in the spectra and, hence, for efficient 
+processing of the spectral information. Computing the isotopic distribution for small molecules is relatively easy for small molecules, however the complexity of 
+this computation increases drastically with the size of the molecule. Therefore, 
+the calculation of the (aggregated) isotopic distribution for larger molecules can be sub-optimal or even problematic due to a combinatorial explosion of terms.
+We presented an alternate, computation- and memory-efficient method to calculate the probabilities of occurrence and exact center-masses of 
+the aggregated isotopic distribution of a molecule in Claesen {\it{et al.}}, 2012.
+
+\section{Overview of the BRAIN package}
+This package has five functions:
+
+\begin{enumerate}
+
+\item {\texttt{useBRAIN}}, which computes the probabilities of aggregated isotopic variants and their center-masses for biomolecules composed out of carbon, hydrogen, oxygen, nitrogen and sulfur. Additionally the function returns the average mass of the biomolecule;
+\item {\texttt{calculateMonoisotopicMass}}, which computes the theoretical monoisotopic mass of biomolecules composed out of carbon, hydrogen, oxygen, nitrogen and sulfur; 
+\item {\texttt{calculateAverageMass}}, which computes the theoretical average mass of biomolecules composed out of carbon, hydrogen, oxygen, nitrogen and sulfur; 
+\item {\texttt{calculateIsotopicProbabilities}}, which computes the isotopic probabilities of the aggregated isotopic variants for biomolecules composed out of carbon, hydrogen, oxygen, nitrogen and sulfur; 
+\item {\texttt{calculateNrPeaks}}, which computes heuristically the required number of consecutive aggregated isotopic variants (starting from the monoisotopic mass), with a minimum of five; 
+\item {\texttt{getAtomsFromSeq}}, which creates atomic composition from a given aminoacid sequence.
+
+\end{enumerate}
+
+\section{Aggregated isotopic distribution calculation}
+Here, we will show how to use the package with angiotensine~II as an example. Its atomic composition is C$_{50}$H$_{71}$N$_{13}$O$_{12}$.
+\subsection{Theoretical monoisotopic mass}
+
+The theoretical monoisotopic mass of a biomolecule with atomic composition $C_vH_wN_xO_yS_z$ is calculated as follows:
+\begin{equation}
+%\label{form:mono}
+Monoisotopic \; mass =
+v M_{C_{12}}+ w M_{H_{1}} + x M_{N_{14}} + y M_{O_{16}} + z M_{S_{32}}\nonumber
+\end{equation}
+We can calculate the monoisotopic mass for angiotensine~II with the BRAIN-package as follows:
+
+
+<<>>=
+#angiotensineII
+angiotensineII <- list(C=50,H=71,N=13,O=12) 
+monoisotopicMassAngiotensineII <- calculateMonoisotopicMass(aC = angiotensineII)
+monoisotopicMassAngiotensineII
+
+#human dynein heavy chain
+humandynein <- list(C=23832,H=37816,N=6528,O=7031,S=170) 
+monoisotopicMassHumandynein <- calculateMonoisotopicMass(aC = humandynein)
+monoisotopicMassHumandynein
+@
+
+\subsection{Theoretical average mass}
+The theoretical average mass of the same biomolecule is calculated as follows:
+\begin{eqnarray}
+\label{form:avg}
+\mbox{\emph{Average mass }}& =  & v M_{C_{12}} \times P_{C_{12}} + v M_{C_{13}} \times P_{C_{13}} \nonumber\\
+& + & w M_{H_{1}} \times P_{H_{1}}+ w M_{H_{2}} \times P_{H_{2}} \nonumber\\
+& + & x M_{N_{14}} \times P_{N_{14}} + x M_{N_{15}} \times P_{N_{15}} \nonumber\\
+& + & y M_{O_{16}} \times P_{O_{16}} + y M_{O_{17}} \times P_{O_{17}} + y M_{O_{18}} \times P_{O_{18}}\nonumber\\
+& + & z M_{S_{32}} \times P_{S_{32}} + z M_{S_{33}} \times P_{S_{33}} + z M_{S_{34}} \times P_{S_{34}} + z M_{S_{36}} \times P_{S_{36}}\nonumber
+\end{eqnarray}
+We can calculate the average mass for angiotensine~II with the BRAIN-package with:
+
+<<>>=
+#angiotensineII
+averageMassAngiotensineII <- calculateAverageMass(aC = angiotensineII)
+averageMassAngiotensineII
+
+#humandynein
+averageMassHumandynein <- calculateAverageMass(aC = humandynein)
+averageMassHumandynein
+@
+
+\subsection{Number of requested aggregated isotopic variants}
+The calculation of the aggregated isotopic distribution can be stopped when the required number of aggregated isotopic variants has been reached. The latter number can be heuristically obtained. For this purpose, we have added the function {\it{calculateNrPeaks}}, which uses following rule of thumb:  the difference between the theoretical monoisotopic mass and the theoretical average mass is computed and multiplied by two. Subsequently, the obtained number is rounded to the nearest integer greater than or equal to the multiplied difference. For small molecules, the minimal number of requested variants is five.
+
+<<>>=
+#angiotensineII
+nrPeaksAngiotensineII <- calculateNrPeaks(aC = angiotensineII)
+nrPeaksAngiotensineII
+
+
+#human dynein heavy chain
+nrPeaksHumandynein <- calculateNrPeaks(aC = humandynein)
+nrPeaksHumandynein
+@
+
+\subsection{Isotopic probabilities of the aggregated isotopic variants}
+The function {\it{calculateIsotopicProbabilities}} returns the isotopic probabilities of the aggregated isotopic variants for molecules with carbon, hydrogen, oxygen, nitrogen and sulfur as atomic building blocks. The function will stop computing as soon as the required number of aggregated variants has been reached (default), when the user-defined coverage has been reached, or when the computed occurrence probabilities become smaller than the defined /textbf{abundantEstim}.
+
+
+<<>>=
+#angiotensineII
+
+#with default options
+prob1 <- calculateIsotopicProbabilities(aC = angiotensineII)
+print(length(prob1))
+
+#with user defined number of requested aggregated isotopic variants
+prob2 <- calculateIsotopicProbabilities(aC = angiotensineII, nrPeaks=20)
+print(length(prob2))
+
+#with user-defined coverage as stopping criterium
+prob3 <- calculateIsotopicProbabilities(aC = angiotensineII, stopOption = "coverage", coverage = 0.99)
+print(length(prob3))  
+
+#with user-defined abundantEstim as stopping criterium
+prob4 <- calculateIsotopicProbabilities(aC = angiotensineII, stopOption = "abundantEstim", abundantEstim = 10)
+print(length(prob4))
+
+
+#human dynein heavy chain
+prob1 <- calculateIsotopicProbabilities(aC = humandynein)
+print(length(prob1))
+
+prob2 <- calculateIsotopicProbabilities(aC = humandynein, nrPeaks=300)
+print(length(prob2))
+
+prob3 <- calculateIsotopicProbabilities(aC = humandynein, stopOption = "coverage", coverage = 0.99)
+print(length(prob3))
+
+prob4 <- calculateIsotopicProbabilities(aC = humandynein, stopOption = "abundantEstim", abundantEstim = 150)
+print(length(prob4))
+@
+
+\subsection{Global function}
+The functions described above are incorporated in the global function {\it{useBRAIN}}.
+
+<<fig=T>>=
+#angiotensineII
+headr <- expression(paste(C[50], H[71], N[13],O[12]))
+#with default options
+res <- useBRAIN(aC= angiotensineII) 
+plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h",xlim=c(min(res$masses)-1,max(res$masses)+1.5))
+title(headr)
+labelMono <- paste("mono-isotopic mass:", res$monoisotopicMass, "Da", sep=" ")
+labelAvg <- paste("average mass:", res$avgMass, "Da", sep=" ")
+text(x=1048.7, y=0.5, labelMono, col="purple")
+text(x=1048.7, y=0.45, labelAvg, col="blue")
+lines(x=rep(res$monoisotopicMass[1],2),y=c(0,res$isoDistr[1]), col = "purple")
+lines(x=rep(res$avgMass,2),y=c(0,max(res$isoDistr)), col = "blue", lty=2)
+@
+
+
+<<fig=T>>=
+#human dynein heavy chain
+headr <- expression(paste(C[23832], H[37816], N[6528],O[7031], N[170]))
+res <- useBRAIN(aC=humandynein, stopOption="coverage", coverage=0.99) 
+plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h",xlim=c(min(res$masses)-1,max(res$masses)+1))
+title(headr)
+labelMono <- paste("mono-isotopic mass: ", res$monoisotopicMass, "Da", sep="")
+labelAvg <- paste("average mass: ", res$avgMass, "Da", sep="")
+mostAbundant <- res$masses[which.max(res$isoDistr)]
+labelAbundant <- paste("most abundant mass: ", mostAbundant, "Da", sep="")
+text(x=533550, y=0.02, labelMono, col="purple")
+text(x=533550, y=0.0175, labelAvg, col="blue")
+text(x=533550, y=0.015, labelAbundant, col="red")
+lines(x=rep(res$avgMass,2),y=c(0,max(res$isoDistr)), col = "blue", lty=2)
+lines(x=rep(mostAbundant,2),y=c(0,max(res$isoDistr)), col = "red")
+@
+
+
+
+
+% lines(x=rep(res$monoisotopic.mass[1],2),y=c(0,res$iso.distr[1]), col = "purple") #not seen
+
+Another stopping criteria as for the function {\it{calculateIsotopicDistribution}} are available (corresponding plots not shown in this document).
+<<>>=
+#with user defined number of requested aggregated isotopic variants
+res <- useBRAIN(aC = angiotensineII, nrPeaks = 20) 
+plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h",xlim=c(min(res$masses)-1,max(res$masses)+1))
+title(headr)
+#with user defined coverage as stopping criterium
+res <- useBRAIN(aC = angiotensineII, stopOption = "coverage", coverage = 0.99) 
+plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h",xlim=c(min(res$masses)-1,max(res$masses)+1))
+title(headr)
+#with user defined abundantEstim as stopping criterium
+res <- useBRAIN(aC = angiotensineII, stopOption = "abundantEstim", abundantEstim = 10) 
+plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h",xlim=c(min(res$masses)-1,max(res$masses)+1))
+title(headr)
+@
+
+
+
+
+
+\section{High-throughput calculation of the aggregated isotopic distribution and their exact center-masses}\label{High-throughput}
+We used the Uniprot database as a case example for the high-throughput calculations. The data was downloaded at 28.11.2011 (release 2011\_11) for query:
+\texttt{organism:"Homo sapiens (Human) [9606]"  AND keyword:"Complete proteome [181]"} in UniProtKB
+(\url{http://www.uniprot.org/uniprot/?query=organism:9606+keyword:181}). 
+
+We downloaded data in a tab-delimited format and considered both reviewed (20,245) (UniProtKB/Swiss-Prot) and unreviewed (37,802) (UniProtKB/TrEMBL) entries.
+We only used the availably sequence information in this example.
+% The data have in separate lines sequences of proteins and therefore were processed by the following script (last operation splitted space breaks in sequence):
+% The most interesting column for us is the column named Sequence containing sequences of amino acids for each protein.
+
+
+<<eval=false>>=
+tabUniprot <- read.table('data/uniprot.tab', sep="\t", header=TRUE) 
+tabUniprot$Sequence <- gsub(" ", "", tabUniprot$Sequence)
+howMany <- nrow(tabUniprot)
+@
+
+We will process only those proteins which are solely composed out of the $20$ natural amino acides, i.e. those which return TRUE values from the test below
+(other proteins are ignored).
+
+% DIRK's NOTE: I have to check later but I believe it is difficult to distinguish between leucine and isoleucine indicated by the letter X.\\
+
+% DIRK's NOTE:. This means that wild cards [*] and uncertainty between [..] and [..] is not considered\\
+
+<<eval=false>>=
+AMINOS <- c("A", "R", "N", "D", "C", "E", "Q", "G", "H", "I", "L", "K", "M", "F", "P", "S", "T", "W", "Y", "V")
+!is.na(sum(match(seqVector, AMINOS)))
+@
+
+To be able to use the function \texttt{useBRAIN} from the BRAIN package we need to change the 
+amino acid sequences into chemical formulas containing the numbers of Carbon, Hydrogen, Nitrogen, Oxygen and Sulphur atoms.
+This may be done using the function \texttt{getAtomsFromSeq} changing the amino acid string into the list with corresponding atomic composition.
+Finally we run the following script to obtain \texttt{dfUniprot} data frame.
+
+<<eval=false>>=
+nrPeaks = 1000
+howMany <- nrow(tabUniprot)
+dfUniprot <- data.frame()
+for (idx in 1:howMany){
+  seq <- as.character(tabUniprot[idx,"Sequence"])
+  seqVector <- strsplit(seq, split="")[[1]]
+  if (!is.na(sum(match(seqVector, AMINOS)))){  
+  aC <- getAtomsFromSeq(seq)
+  res <- useBRAIN(aC = aC, nrPeaks = nrPeaks, stopOption = "abundantEstim", abundantEstim = 10)
+  isoDistr <- res$isoDistr
+  masses <- res$masses
+  maxIdx <- which.max(isoDistr)
+  mostAbundantPeakMass <- masses[maxIdx]
+  monoMass <- res$monoisotopicMass  
+  dfAtomicComp <- data.frame(C=aC[1], H=aC[2], N=aC[3], O=aC[4], S=aC[5])
+  singleDfUniprot <- data.frame(dfAtomicComp, monoMass=monoMass, maxIdx=maxIdx, mostAbundantPeakMass=mostAbundantPeakMass  
+  )
+  if (!is.na(monoMass)){ #for huge atomic configuration numerical problems may occur
+    dfUniprot <- rbind(dfUniprot, singleDfUniprot)
+  }
+  }
+}
+
+write.table(unique(dfUniprot), "data/uniprotBRAIN.txt")
+@
+
+Execution of this code needed around 80 minutes on PC with two Intel(R) Core(TM)2 2.40GHz CPUs.
+
+
+\section{Predicting monoisotopic mass from most abundant peak mass}
+We obtain the data frame with the processed human proteins from Uniprot database 
+(the processing procedure was described in Section~\ref{High-throughput}).
+We may also check the number of rows.
+
+<<>>=
+uniprotBRAIN <- read.table(system.file("extdata", "uniprotBRAIN.txt", package="BRAIN"))
+nrow(uniprotBRAIN)
+@
+
+
+We only consider proteins with monoisotopic mass lower than $10^5$ Da.
+
+<<uniprot_10_5>>=
+uniprot10to5 <- uniprotBRAIN[uniprotBRAIN$monoMass < 10^5,]
+nrow(uniprot10to5)
+@ 
+
+We can observe a linear relationship between most abundant peak mass and monoisotopic mass for the considered data.
+
+<<fig=T>>=
+library(lattice)
+mm <- uniprot10to5$monoMass
+mmMin <- floor(min(mm)) - 1
+mmMax <- ceiling(max(mm)) + 1
+sq <- seq(from=0, to=mmMax, by=5000)
+bw <- bwplot(cut(monoMass, sq) ~ mostAbundantPeakMass, data=uniprot10to5)
+plot(bw)
+@
+
+<<fig=T>>=
+bw2 <- bwplot(cut(monoMass, sq) ~ (mostAbundantPeakMass - monoMass), data=uniprot10to5)
+plot(bw2)
+@
+
+
+% plots
+% <<fig=T>>=
+% @
+
+Following obtained linear relationship we build the linear model for predicting monoisotopic mass just by knowing most abundant peak mass.
+
+<<>>=
+lmod <- lm(monoMass ~ mostAbundantPeakMass, data=uniprot10to5)
+summary(lmod)
+@
+
+
+We can then further analyze the model using histogram which shows the residuals.
+
+% <<fig=T>>=
+% icpt.lm <- lmod$coefficients[1]
+% cff.lm <- lmod$coefficients[2]
+% cff <- (1 - cff.lm)
+% icpt <- -icpt.lm
+% plot(uniprot.10to5$most.abundant.peak.mass, (uniprot.10to5$most.abundant.peak.mass - uniprot.10to5$mono.mass), pch=1)
+% points(uniprot.10to5$most.abundant.peak.mass, round(icpt + cff * uniprot.10to5$mono.mass), col="green", pch=".")
+% points(uniprot.10to5$most.abundant.peak.mass, round(icpt + cff * uniprot.10to5$mono.mass)-1, col="violet", pch=".")
+% points(uniprot.10to5$most.abundant.peak.mass, round(icpt + cff * uniprot.10to5$mono.mass)-2, col="violet", pch=".")
+% points(uniprot.10to5$most.abundant.peak.mass, round(icpt + cff * uniprot.10to5$mono.mass)+1, col="red", pch=".")
+% points(uniprot.10to5$most.abundant.peak.mass, round(icpt + cff * uniprot.10to5$mono.mass)+2, col="red", pch=".")
+% @
+
+<<fig=T>>=
+icptLm <- lmod$coefficients[1]
+cffLm <- lmod$coefficients[2]
+expected <- icptLm + cffLm * uniprot10to5$mostAbundantPeakMass
+residuals <- uniprot10to5$monoMass - expected
+hist <- hist(residuals, seq(floor(min(residuals)),ceiling(max(residuals)), by=0.1))
+plot(hist)
+@
+
+
+
+
+\end{document}
