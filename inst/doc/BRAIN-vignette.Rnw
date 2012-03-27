@@ -126,11 +126,13 @@ prob2 <- calculateIsotopicProbabilities(aC = angiotensineII, nrPeaks=20)
 print(length(prob2))
 
 #with user-defined coverage as stopping criterium
-prob3 <- calculateIsotopicProbabilities(aC = angiotensineII, stopOption = "coverage", coverage = 0.99)
+prob3 <- calculateIsotopicProbabilities(aC = angiotensineII, 
+stopOption = "coverage", coverage = 0.99)
 print(length(prob3))  
 
 #with user-defined abundantEstim as stopping criterium
-prob4 <- calculateIsotopicProbabilities(aC = angiotensineII, stopOption = "abundantEstim", abundantEstim = 10)
+prob4 <- calculateIsotopicProbabilities(aC = angiotensineII, 
+stopOption = "abundantEstim", abundantEstim = 10)
 print(length(prob4))
 
 
@@ -141,10 +143,12 @@ print(length(prob1))
 prob2 <- calculateIsotopicProbabilities(aC = humandynein, nrPeaks=300)
 print(length(prob2))
 
-prob3 <- calculateIsotopicProbabilities(aC = humandynein, stopOption = "coverage", coverage = 0.99)
+prob3 <- calculateIsotopicProbabilities(aC = humandynein, 
+stopOption = "coverage", coverage = 0.99)
 print(length(prob3))
 
-prob4 <- calculateIsotopicProbabilities(aC = humandynein, stopOption = "abundantEstim", abundantEstim = 150)
+prob4 <- calculateIsotopicProbabilities(aC = humandynein, 
+stopOption = "abundantEstim", abundantEstim = 150)
 print(length(prob4))
 @
 
@@ -156,7 +160,8 @@ The functions described above are incorporated in the global function {\it{useBR
 headr <- expression(paste(C[50], H[71], N[13],O[12]))
 #with default options
 res <- useBRAIN(aC= angiotensineII) 
-plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h",xlim=c(min(res$masses)-1,max(res$masses)+1.5))
+plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h", 
+xlim=c(min(res$masses)-1,max(res$masses)+1.5))
 title(headr)
 labelMono <- paste("mono-isotopic mass:", res$monoisotopicMass, "Da", sep=" ")
 labelAvg <- paste("average mass:", res$avgMass, "Da", sep=" ")
@@ -171,7 +176,8 @@ lines(x=rep(res$avgMass,2),y=c(0,max(res$isoDistr)), col = "blue", lty=2)
 #human dynein heavy chain
 headr <- expression(paste(C[23832], H[37816], N[6528],O[7031], N[170]))
 res <- useBRAIN(aC=humandynein, stopOption="coverage", coverage=0.99) 
-plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h",xlim=c(min(res$masses)-1,max(res$masses)+1))
+plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h", 
+xlim=c(min(res$masses)-1,max(res$masses)+1))
 title(headr)
 labelMono <- paste("mono-isotopic mass: ", res$monoisotopicMass, "Da", sep="")
 labelAvg <- paste("average mass: ", res$avgMass, "Da", sep="")
@@ -193,15 +199,18 @@ Another stopping criteria as for the function {\it{calculateIsotopicDistribution
 <<>>=
 #with user defined number of requested aggregated isotopic variants
 res <- useBRAIN(aC = angiotensineII, nrPeaks = 20) 
-plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h",xlim=c(min(res$masses)-1,max(res$masses)+1))
+plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h", 
+xlim=c(min(res$masses)-1,max(res$masses)+1))
 title(headr)
 #with user defined coverage as stopping criterium
 res <- useBRAIN(aC = angiotensineII, stopOption = "coverage", coverage = 0.99) 
-plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h",xlim=c(min(res$masses)-1,max(res$masses)+1))
+plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h", 
+xlim=c(min(res$masses)-1,max(res$masses)+1))
 title(headr)
 #with user defined abundantEstim as stopping criterium
 res <- useBRAIN(aC = angiotensineII, stopOption = "abundantEstim", abundantEstim = 10) 
-plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h",xlim=c(min(res$masses)-1,max(res$masses)+1))
+plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h", 
+xlim=c(min(res$masses)-1,max(res$masses)+1))
 title(headr)
 @
 
@@ -234,7 +243,8 @@ We will process only those proteins which are solely composed out of the $20$ na
 % DIRK's NOTE:. This means that wild cards [*] and uncertainty between [..] and [..] is not considered\\
 
 <<eval=false>>=
-AMINOS <- c("A", "R", "N", "D", "C", "E", "Q", "G", "H", "I", "L", "K", "M", "F", "P", "S", "T", "W", "Y", "V")
+AMINOS <- c("A", "R", "N", "D", "C", "E", "Q", "G", "H", "I", "L", "K", 
+"M", "F", "P", "S", "T", "W", "Y", "V")
 !is.na(sum(match(seqVector, AMINOS)))
 @
 
@@ -252,14 +262,16 @@ for (idx in 1:howMany){
   seqVector <- strsplit(seq, split="")[[1]]
   if (!is.na(sum(match(seqVector, AMINOS)))){  
   aC <- getAtomsFromSeq(seq)
-  res <- useBRAIN(aC = aC, nrPeaks = nrPeaks, stopOption = "abundantEstim", abundantEstim = 10)
+  res <- useBRAIN(aC = aC, nrPeaks = nrPeaks, stopOption = "abundantEstim", 
+abundantEstim = 10)
   isoDistr <- res$isoDistr
   masses <- res$masses
   maxIdx <- which.max(isoDistr)
   mostAbundantPeakMass <- masses[maxIdx]
   monoMass <- res$monoisotopicMass  
   dfAtomicComp <- data.frame(C=aC[1], H=aC[2], N=aC[3], O=aC[4], S=aC[5])
-  singleDfUniprot <- data.frame(dfAtomicComp, monoMass=monoMass, maxIdx=maxIdx, mostAbundantPeakMass=mostAbundantPeakMass  
+  singleDfUniprot <- data.frame(dfAtomicComp, monoMass=monoMass, maxIdx=maxIdx, 
+mostAbundantPeakMass=mostAbundantPeakMass  
   )
   if (!is.na(monoMass)){ #for huge atomic configuration numerical problems may occur
     dfUniprot <- rbind(dfUniprot, singleDfUniprot)
@@ -299,12 +311,12 @@ mm <- uniprot10to5$monoMass
 mmMin <- floor(min(mm)) - 1
 mmMax <- ceiling(max(mm)) + 1
 sq <- seq(from=0, to=mmMax, by=5000)
-bw <- bwplot(cut(monoMass, sq) ~ mostAbundantPeakMass, data=uniprot10to5)
+bw <- bwplot(cut(monoMass, sq) ~ mostAbundantPeakMass, data=uniprot10to5, ylab="monoMass (Da)", xlab="mostAbundantPeakMass (Da)")
 plot(bw)
 @
 
 <<fig=T>>=
-bw2 <- bwplot(cut(monoMass, sq) ~ (mostAbundantPeakMass - monoMass), data=uniprot10to5)
+bw2 <- bwplot(cut(monoMass, sq) ~ (mostAbundantPeakMass - monoMass), data=uniprot10to5,  ylab="monoMass (Da)", xlab="mostAbundantPeakMass - monoMass (Da)")
 plot(bw2)
 @
 
@@ -341,7 +353,7 @@ icptLm <- lmod$coefficients[1]
 cffLm <- lmod$coefficients[2]
 expected <- icptLm + cffLm * uniprot10to5$mostAbundantPeakMass
 residuals <- uniprot10to5$monoMass - expected
-hist <- hist(residuals, seq(floor(min(residuals)),ceiling(max(residuals)), by=0.1))
+hist <- hist(residuals, seq(floor(min(residuals)),ceiling(max(residuals)), by=0.1), main="", xlab="residuals of the linear model (Da)")
 plot(hist)
 @
 

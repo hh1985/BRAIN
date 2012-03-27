@@ -3,10 +3,10 @@
 \alias{BRAIN}
 \docType{package}
 \title{
-Implementation of BRAIN (Baffing Recursive Algorithm for Isotope distributioN calculations)
+Implementation of BRAIN (Baffling Recursive Algorithm for Isotope distributioN calculations)
 }
 \description{
-This package implements BRAIN (Baffing Recursive Algorithm for Isotope distributioN calculations) is described in full details by Claesen et al. The algorithm uses an algebraic approach (Viete's formulas, Newton identities [Macd]) which is 
+This package implements BRAIN (Baffling Recursive Algorithm for Isotope distributioN calculations) is described in full details by Claesen et al. The algorithm uses an algebraic approach (Viete's formulas, Newton identities [Macd]) which is 
 especially useful for large molecules due to its advantageous scaling properties. 
 This version of the package provides functions for calculating the aggregated isotopic distribution and center-masses masses for 
 each aggregated isotopic variant for chemical components built from carbon, hydrogen, oxygen, nitrogen and sulfur (e.g. peptides). The natural abundances and 
@@ -16,8 +16,8 @@ molecular masses for stable isotopes of C, H, N, O, S are taken from IUPAC 1997 
 \tabular{ll}{
 Package: \tab BRAIN\cr
 Type: \tab Package\cr
-Version: \tab 0.99.2\cr
-Date: \tab 2012-03-14\cr
+Version: \tab 0.99.3\cr
+Date: \tab 2012-03-27\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
