@@ -316,7 +316,8 @@ plot(bw)
 @
 
 <<fig=T>>=
-bw2 <- bwplot(cut(monoMass, sq) ~ (mostAbundantPeakMass - monoMass), data=uniprot10to5,  ylab="monoMass (Da)", xlab="mostAbundantPeakMass - monoMass (Da)")
+bw2 <- bwplot(cut(monoMass, sq) ~ (mostAbundantPeakMass - monoMass), 
+data=uniprot10to5,  ylab="monoMass (Da)", xlab="mostAbundantPeakMass - monoMass (Da)")
 plot(bw2)
 @
 
@@ -353,7 +354,8 @@ icptLm <- lmod$coefficients[1]
 cffLm <- lmod$coefficients[2]
 expected <- icptLm + cffLm * uniprot10to5$mostAbundantPeakMass
 residuals <- uniprot10to5$monoMass - expected
-hist <- hist(residuals, seq(floor(min(residuals)),ceiling(max(residuals)), by=0.1), main="", xlab="residuals of the linear model (Da)")
+hist <- hist(residuals, seq(floor(min(residuals)),ceiling(max(residuals)), by=0.1), 
+main="", xlab="residuals of the linear model (Da)")
 plot(hist)
 @
 
