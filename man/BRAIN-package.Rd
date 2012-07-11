@@ -16,8 +16,8 @@ molecular masses for stable isotopes of C, H, N, O, S are taken from IUPAC 1997 
 \tabular{ll}{
 Package: \tab BRAIN\cr
 Type: \tab Package\cr
-Version: \tab 0.99.4\cr
-Date: \tab 2012-03-28\cr
+Version: \tab 1.1.1\cr
+Date: \tab 2012-07-11\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
