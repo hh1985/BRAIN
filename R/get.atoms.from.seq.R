@@ -35,7 +35,8 @@ getAtomsFromSeq <- function(seq){
     len <- len + 1
   }
 #   subtract water masses
-  atoms <- atoms - (len-1) * WATER
+  atoms <- atoms - (len-1) * WATER	
   atomsList <- getAC(atoms)
+  atomsList[is.na(atomsList)] <- NULL
   atomsList
 }
