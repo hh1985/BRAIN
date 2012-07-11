@@ -94,7 +94,7 @@ getCoefficients <- function(coef){
 
     aVec <- c(a[["C"]], a[["H"]], a[["N"]], a[["O"]], a[["S"]], a[["F"]], a[["Br"]], a[["P"]], a[["Cl"]], a[["Na"]], a[["I"]])
     bVec <- c(b[["C"]], b[["H"]], b[["N"]], b[["O"]], b[["S"]], b[["F"]], b[["Br"]], b[["P"]], b[["Cl"]], b[["Na"]], b[["I"]])
-    cVec <<- c(c[["C"]], c[["H"]], c[["N"]], c[["O"]], c[["S"]], c[["F"]], c[["Br"]], c[["P"]], c[["Cl"]], c[["Na"]], c[["I"]])
+    cVec <- c(c[["C"]], c[["H"]], c[["N"]], c[["O"]], c[["S"]], c[["F"]], c[["Br"]], c[["P"]], c[["Cl"]], c[["Na"]], c[["I"]])
     dVec <- c(d[["C"]], d[["H"]], d[["N"]], d[["O"]], d[["S"]], d[["F"]], d[["Br"]], d[["P"]], d[["Cl"]], d[["Na"]], d[["I"]])
     zVec<- complex(real = cVec, imaginary = dVec)
     phiVec <- Arg(zVec)
