@@ -30,7 +30,11 @@ listMass <- list(
 
 #compare with: http://www.chem.ualberta.ca/~massspec/atomic_mass_abund.pdf
 
+# in header of this document:
 
+# "The isotopic mass data is from G. Audi, A. H. Wapstra Nucl. Phys A. 1993, 565, 1-65 and G. Audi, A. H. Wapstra Nucl. Phys A. 1995,
+# 595, 409-480. The percent natural abundance data is from the 1997 report of the IUPAC Subcommittee for Isotopic
+# Abundance Measurements by K.J.R. Rosman, P.D.P. Taylor Pure Appl. Chem. 1999, 71, 1593-1607."
 
 
 
