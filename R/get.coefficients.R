@@ -131,7 +131,7 @@ getListAtoms <- function(){
  listNa <- list(real = NULL, comp = NULL)
  listI <- list(real = NULL, comp = NULL) 
 
- listK <- list(real = NULL, comp = 1) 
+ listK <- list(real = NULL, comp = 6) 
 
 
  list(listC, listH, listN, listO, listS, listF, listBr, listP, listCl, listNa, listI, listK)
