@@ -2,7 +2,7 @@
 
 getCoefficients <- function(coef){
 
-    list.null <- list(C=NULL, H=NULL, N=NULL, O=NULL, S=NULL, F = NULL, Br = NULL, P = NULL, Cl=NULL, Na = NULL, I = NULL)	
+    list.null <- list(C=NULL, H=NULL, N=NULL, O=NULL, S=NULL, F = NULL, Br = NULL, P = NULL, Cl=NULL, Na = NULL, I = NULL, K=NULL)	
 
     a <- list.null
     b <- list.null
@@ -88,20 +88,27 @@ getCoefficients <- function(coef){
     d[["I"]] <- NULL
     q0[["I"]] <- coef[["I"]][1]
 
+
+    a[["K"]] <- (1/coef[["K"]][3])
+    b[["K"]] <- NULL
+    c[["K"]] <- -coef[["K"]][2]/(2*coef[["K"]][3])
+    d[["K"]] <- sqrt(-(coef[["K"]][2])^2+4*coef[["K"]][3]*coef[["K"]][1])/(2*coef[["K"]][3])
+    q0[["K"]] <- coef[["K"]][1]
+
   
 
     ##### coefficients together 
 
-    aVec <- c(a[["C"]], a[["H"]], a[["N"]], a[["O"]], a[["S"]], a[["F"]], a[["Br"]], a[["P"]], a[["Cl"]], a[["Na"]], a[["I"]])
-    bVec <- c(b[["C"]], b[["H"]], b[["N"]], b[["O"]], b[["S"]], b[["F"]], b[["Br"]], b[["P"]], b[["Cl"]], b[["Na"]], b[["I"]])
-    cVec <- c(c[["C"]], c[["H"]], c[["N"]], c[["O"]], c[["S"]], c[["F"]], c[["Br"]], c[["P"]], c[["Cl"]], c[["Na"]], c[["I"]])
-    dVec <- c(d[["C"]], d[["H"]], d[["N"]], d[["O"]], d[["S"]], d[["F"]], d[["Br"]], d[["P"]], d[["Cl"]], d[["Na"]], d[["I"]])
+    aVec <- c(a[["C"]], a[["H"]], a[["N"]], a[["O"]], a[["S"]], a[["F"]], a[["Br"]], a[["P"]], a[["Cl"]], a[["Na"]], a[["I"]], a[["K"]])
+    bVec <- c(b[["C"]], b[["H"]], b[["N"]], b[["O"]], b[["S"]], b[["F"]], b[["Br"]], b[["P"]], b[["Cl"]], b[["Na"]], b[["I"]], b[["K"]])
+    cVec <- c(c[["C"]], c[["H"]], c[["N"]], c[["O"]], c[["S"]], c[["F"]], c[["Br"]], c[["P"]], c[["Cl"]], c[["Na"]], c[["I"]], c[["K"]])
+    dVec <- c(d[["C"]], d[["H"]], d[["N"]], d[["O"]], d[["S"]], d[["F"]], d[["Br"]], d[["P"]], d[["Cl"]], d[["Na"]], d[["I"]], d[["K"]])
     zVec<- complex(real = cVec, imaginary = dVec)
     phiVec <- Arg(zVec)
-    q0Vec <- c(q0[["C"]], q0[["H"]], q0[["N"]], q0[["O"]], q0[["S"]], q0[["F"]], q0[["Br"]], q0[["P"]], q0[["Cl"]], q0[["Na"]], q0[["I"]])
+    q0Vec <- c(q0[["C"]], q0[["H"]], q0[["N"]], q0[["O"]], q0[["S"]], q0[["F"]], q0[["Br"]], q0[["P"]], q0[["Cl"]], q0[["Na"]], q0[["I"]], q0[["K"]])
 
-    nrRRoots <- c(length(b[["C"]]), length(b[["H"]]), length(b[["N"]]), length(b[["O"]]), length(b[["S"]]), length(b[["F"]]), length(b[["Br"]]), length(b[["P"]]), length(b[["Cl"]]), length(b[["Na"]]), length(b[["I"]]))
-    nrCRoots <- c(length(c[["C"]]), length(c[["H"]]), length(c[["N"]]), length(c[["O"]]), length(c[["S"]]), length(c[["F"]]), length(c[["Br"]]), length(c[["P"]]), length(c[["Cl"]]), length(c[["Na"]]), length(c[["I"]]))
+    nrRRoots <- c(length(b[["C"]]), length(b[["H"]]), length(b[["N"]]), length(b[["O"]]), length(b[["S"]]), length(b[["F"]]), length(b[["Br"]]), length(b[["P"]]), length(b[["Cl"]]), length(b[["Na"]]), length(b[["I"]]), length(b[["K"]]))
+    nrCRoots <- c(length(c[["C"]]), length(c[["H"]]), length(c[["N"]]), length(c[["O"]]), length(c[["S"]]), length(c[["F"]]), length(c[["Br"]]), length(c[["P"]]), length(c[["Cl"]]), length(c[["Na"]]), length(c[["I"]]), length(c[["K"]]))
 
     lRes <- list(aVec, bVec, cVec, dVec, zVec, phiVec, q0Vec, nrRRoots, nrCRoots)
     lRes	
@@ -124,8 +131,10 @@ getListAtoms <- function(){
  listNa <- list(real = NULL, comp = NULL)
  listI <- list(real = NULL, comp = NULL) 
 
+ listK <- list(real = NULL, comp = 1) 
 
- list(listC, listH, listN, listO, listS, listF, listBr, listP, listCl, listNa, listI)
+
+ list(listC, listH, listN, listO, listS, listF, listBr, listP, listCl, listNa, listI, listK)
 }
 
 getCoefficientsIso <- function(){
@@ -135,7 +144,7 @@ getCoefficientsIso <- function(){
 
 calculateMassCoefList <- function(){
 # listMass and listIso defined in input.R
- massCoef <-  list(C=NULL, H=NULL, N=NULL, O=NULL, S=NULL, F = NULL, Br = NULL, P = NULL, Cl = NULL, Na = NULL, I = NULL)
+ massCoef <-  list(C=NULL, H=NULL, N=NULL, O=NULL, S=NULL, F = NULL, Br = NULL, P = NULL, Cl = NULL, Na = NULL, I = NULL, K = NULL)
 
  massCoef[["C"]] <- listMass[["C"]] * listIso[["C"]]
  massCoef[["H"]] <- listMass[["H"]] * listIso[["H"]]
@@ -148,6 +157,7 @@ calculateMassCoefList <- function(){
  massCoef[["Cl"]] <- listMass[["Cl"]] * listIso[["Cl"]]  
  massCoef[["Na"]] <- listMass[["Na"]] * listIso[["Na"]]
  massCoef[["I"]] <- listMass[["I"]] * listIso[["I"]]        
+ massCoef[["K"]] <- listMass[["K"]] * listIso[["K"]]        	
 
 
  massCoefL <- getCoefficients(massCoef)
@@ -164,7 +174,7 @@ calculateMonoisotopicMass <- function(aC){
   aCVec <- getACVec(aC)
 
   
-  monomass <- c((listMass[["C"]])[1], (listMass[["H"]])[1], (listMass[["N"]])[1], (listMass[["O"]])[1], (listMass[["S"]])[1], (listMass[["F"]])[1], (listMass[["Br"]])[1], (listMass[["P"]])[1], (listMass[["Cl"]])[1], (listMass[["Na"]])[1], (listMass[["I"]])[1])
+  monomass <- c((listMass[["C"]])[1], (listMass[["H"]])[1], (listMass[["N"]])[1], (listMass[["O"]])[1], (listMass[["S"]])[1], (listMass[["F"]])[1], (listMass[["Br"]])[1], (listMass[["P"]])[1], (listMass[["Cl"]])[1], (listMass[["Na"]])[1], (listMass[["I"]])[1], (listMass[["K"]])[1])
   sum(aCVec * monomass)
 }
 
@@ -188,8 +198,10 @@ calculateAverageMass <- function(aC){
 	averageNa <- sum(listMass[["Na"]] * listIso[["Na"]])
 	averageI <- sum(listMass[["I"]] * listIso[["I"]])
 
+	averageK <- sum(listMass[["K"]] * listIso[["K"]])
 
-	averageMass <- averageC * aCVec[1]  + averageH * aCVec[2] + averageN * aCVec[3] + averageO * aCVec[4] + averageS * aCVec[5] + averageF * aCVec[6]  + averageBr * aCVec[7] + averageP * aCVec[8] + averageCl * aCVec[9] + averageNa * aCVec[10] + averageI * aCVec[11]
+
+	averageMass <- averageC * aCVec[1]  + averageH * aCVec[2] + averageN * aCVec[3] + averageO * aCVec[4] + averageS * aCVec[5] + averageF * aCVec[6]  + averageBr * aCVec[7] + averageP * aCVec[8] + averageCl * aCVec[9] + averageNa * aCVec[10] + averageI * aCVec[11] + averageK * aCVec[12]
 	averageMass
 }
 
@@ -215,11 +227,13 @@ getACVec <- function(aC){
   nrNa <- getACListValue(aC[["Na"]])
   nrI <- getACListValue(aC[["I"]])
 
-  c(nrC, nrH, nrN, nrO, nrS, nrF, nrBr, nrP, nrCl, nrNa, nrI)
+  nrK <- getACListValue(aC[["K"]])	
+
+  c(nrC, nrH, nrN, nrO, nrS, nrF, nrBr, nrP, nrCl, nrNa, nrI, nrK)
 }
 
 
 
 getAC <- function(aCVec){  
-  list(C=aCVec[1], H=aCVec[2], N=aCVec[3], O=aCVec[4], S=aCVec[5], F = aCVec[6], Br = aCVec[7], P = aCVec[8], Cl = aCVec[9], Na = aCVec[10], I = aCVec[11])
+  list(C=aCVec[1], H=aCVec[2], N=aCVec[3], O=aCVec[4], S=aCVec[5], F = aCVec[6], Br = aCVec[7], P = aCVec[8], Cl = aCVec[9], Na = aCVec[10], I = aCVec[11], K = aCVec[12])
 }
