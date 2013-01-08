@@ -142,10 +142,12 @@ useBRAIN <- function(aC = aC, stopOption="nrPeaks", nrPeaks=NULL, coverage=NULL,
  nrConsideredAtoms <- length(isoList[[1]])
  
 
+
+
  aCVec <- getACVec(aC)
- lRes <- lapply(1:nrConsideredAtoms, calculateDifferential, aCVec, nrPeaks, isoList, massCoefList)
+ lRes <- lapply((1:nrConsideredAtoms)[aCVec > 0], calculateDifferential, aCVec, nrPeaks, isoList, massCoefList)
  
- for (i in 1:nrConsideredAtoms){
+ for (i in 1:length(lRes)){
       if (i == 1){
 	masses <- lRes[[1]]
      }else{
