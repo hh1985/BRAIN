@@ -174,7 +174,7 @@ lines(x=rep(res$avgMass,2),y=c(0,max(res$isoDistr)), col = "blue", lty=2)
 
 <<fig=T>>=
 #human dynein heavy chain
-headr <- expression(paste(C[23832], H[37816], N[6528],O[7031], N[170]))
+headr <- expression(paste(C[23832], H[37816], N[6528],O[7031], S[170]))
 res <- useBRAIN(aC=humandynein, stopOption="coverage", coverage=0.99) 
 plot(res$masses,res$isoDistr,xlab="mass",ylab="abundances", type="h", 
 xlim=c(min(res$masses)-1,max(res$masses)+1))
