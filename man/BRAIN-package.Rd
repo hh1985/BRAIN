@@ -21,7 +21,7 @@ Date: \tab 2013-01-12\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
-}
+} 
 \author{
 Piotr Dittwald with contribution of Dirk Valkenborg and Jurgen Claesen
 
