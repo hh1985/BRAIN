@@ -1,0 +1,17 @@
+Package: BRAIN
+Type: Package
+Title: Baffling Recursive Algorithm for Isotope distributioN
+        calculations
+Version: 1.14.0
+Date: 2013-01-21
+Author: Piotr Dittwald, with contributions of Dirk Valkenborg and
+        Jurgen Claesen
+Maintainer: Piotr Dittwald <piotr.dittwald@mimuw.edu.pl>
+Depends: R (>= 2.8.1), PolynomF, Biostrings, lattice
+Description: Package for calculating aggregated isotopic distribution
+        and exact center-masses for chemical substances (in this
+        version composed of C, H, N, O and S). This is an
+        implementation of the BRAIN algorithm described in the paper by
+        J. Claesen, P. Dittwald, T. Burzykowski and D. Valkenborg.
+License: GPL-2
+biocViews: MassSpectrometry, Proteomics
