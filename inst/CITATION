@@ -1,0 +1,26 @@
+citHeader("To cite package 'BRAIN' in publications use:")
+
+desc <- packageDescription("BRAIN")
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", desc$Date)
+vers <- paste("R package version", desc$Version)
+
+
+citEntry(entry="Article",
+         title="An efficient method to calculate the aggregated isotopic distribution and exact center-masses",
+         author=personList(as.person("J. Claesen"),
+                           as.person("P. Dittwald"),
+                           as.person("T. Burzykowski"),
+                           as.person("D. Valkenborg") 
+                           ),
+         journal="JASMS",        
+	 year = "2012",
+         textVersion =
+             paste("Claesen J., Dittwald P., Burzykowski T. and Valkenborg D. An efficient method to calculate
+the aggregated isotopic distribution and exact center-masses. JASMS, 2012, doi:10.1007/
+s13361-011-0326-2",
+                   sep=""))
+                   
+citFooter("To obtain the references in BibTex format, enter",
+          "'toBibtex(citation(\"fastseg\"))'")
+
+

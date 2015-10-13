@@ -1,0 +1,9 @@
+export(getAtomsFromSeq)
+export(useBRAIN)
+export(calculateIsotopicProbabilities)
+export(calculateAverageMass)
+export(calculateMonoisotopicMass)
+export(calculateNrPeaks)
+importFrom("PolynomF", polynom)
+importFrom("lattice", bwplot)
+
